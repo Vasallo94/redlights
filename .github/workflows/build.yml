@@ -12,7 +12,7 @@ jobs:
     permissions:
       contents: write   # para crear la release al pushear un tag
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0   # build.sh saca la versión de los tags y el build del nº de commits
 
@@ -20,7 +20,7 @@ jobs:
         run: ./build.sh --zip
 
       - name: Guardar el zip como artefacto
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: RedLights-macos
           path: RedLights-*.zip
