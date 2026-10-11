@@ -1,0 +1,16 @@
+# Compilación de SwiftPM y app empaquetada
+.build/
+RedScreen.app/
+*.zip
+
+# Xcode / SwiftPM locales
+.swiftpm/
+xcuserdata/
+DerivedData/
+
+# macOS
+.DS_Store
+
+# Notas de desarrollo locales
+CLAUDE.md
+.claude/
