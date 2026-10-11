@@ -10,7 +10,7 @@ En macOS hay una sola API (`CGSetDisplayTransferByFormula`) que vale para todo. 
 |---|---|---|---|
 | **X11** (cualquier escritorio) | XRandR `XRRSetCrtcGamma` con rampas a medida (verde y azul a 0) | **No.** La rampa se queda puesta: hay que guardar la original y restaurarla al salir | Alta: es lo que usan redshift y xcalib |
 | **wlroots** (Sway, Hyprland, labwc, Wayfire, river, niri…) | Protocolo Wayland [`wlr-gamma-control-unstable-v1`](https://wayland.app/protocols/wlr-gamma-control-unstable-v1) | **Sí.** Al destruir el objeto se restaura la gamma, como en macOS. Obliga a tener un proceso vivo | Alta: es lo que usan wlsunset y gammastep |
-| **GNOME** (Mutter, X11 y Wayland) | D-Bus `org.gnome.Mutter.DisplayConfig`: `SetCrtcGamma` (rampas) o `SetOutputCTM` (matriz de color 3×3) | Por comprobar | Media: los métodos existen en `main` de Mutter, pero es una interfaz interna de GNOME, no un contrato público |
+| **GNOME** (Mutter, X11 y Wayland) | D-Bus `org.gnome.Mutter.DisplayConfig`: `SetCrtcGamma` (rampas) o `SetOutputCTM` (matriz de color 3×3) | Por comprobar | Media-alta: en Mutter 50.5 un tercero puede llamarlos (ver resultados abajo), pero es una interfaz interna de GNOME, no un contrato público |
 | **KDE Plasma 6** (KWin Wayland) | Perfil ICC con etiqueta **VCGT** asignado a cada salida, la misma vía que [KGamma2](https://planet.kde.org/david-edmundson-2026-08-03-wayland-pain-points-kgamma/) | No (es configuración persistente) | Media: KWin aplica la VCGT y se combina con Night Color, pero falta ver cómo asignar el perfil desde fuera (¿`kscreen-doctor`?) |
 | Hyprland (alternativa) | `hyprland-ctm-control-v1`, el de hyprsunset | Por comprobar | Media; Hyprland también soporta wlr-gamma-control, que basta |
 
@@ -71,3 +71,14 @@ Qué hay que anotar en cada uno:
 - Con `--mode ctm`: ¿el texto azul o verde sigue legible en rojo?
 
 Si X11 y GNOME responden bien, el siguiente spike es wlroots (en una Raspberry Pi con labwc o en Sway).
+
+## Resultados en contenedor (2026-10-11, Podman en el Mac)
+
+Sin pantalla real no se puede ver el rojo, pero sí comprobar que las llamadas funcionan:
+
+- **X11 (Debian 12 + Xvfb)**: `x11_red.py` aplica la rampa correcta (rojo 0→50 %, verde y azul a 0) y, **dentro de la misma conexión**, guardar → rojo → restaurar devuelve exactamente la rampa original. ✅ Leída desde otra conexión después de que el cliente se desconecte, la rampa de Xvfb sale corrupta. Es un fallo de Xvfb, no del spike, pero conviene revisarlo en hardware real.
+- **GNOME (Fedora, Mutter 50.5 `--headless`)**: `org.gnome.Mutter.DisplayConfig` responde a un tercero sin `AccessDenied`. `SetOutputCTM` y `SetCrtcGamma` con ids inexistentes devuelven `InvalidArgs: Invalid output id / Invalid crtc id`, es decir, validan argumentos y no permisos. ✅ Los monitores virtuales del modo headless no aparecen en `GetResources`, así que el efecto real queda pendiente de hardware.
+
+## Montar un equipo de pruebas
+
+Para probar varios backends con una sola máquina (por ejemplo, un mini PC): instalar una distro con **GNOME** y añadir **Sway** (wlroots) y **XFCE** (X11) como sesiones alternativas, que se eligen en la pantalla de inicio de sesión. Con eso se prueban 3 de los 4 caminos. Debian 13 o Fedora sirven; en Fedora, GNOME ya no tiene sesión X11, así que X11 llegaría por XFCE. KDE Plasma se puede añadir igual.

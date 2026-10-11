@@ -48,6 +48,8 @@ def main() -> None:
     active_crtcs = [c[0] for c in crtcs if c[6] >= 0]  # c[6] = modo actual, -1 si apagado
     output_ids = [o[0] for o in outputs]
     print(f"serial={serial}  crtcs activos={active_crtcs}  salidas={output_ids}")
+    if not (output_ids if args.mode == "ctm" else active_crtcs):
+        sys.exit("Mutter no expone salidas/CRTC aquí (¿sesión headless o monitores virtuales?)")
 
     restore = []
     if args.mode == "ctm":
