@@ -2,11 +2,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "RedScreen",
+    name: "RedLights",
     platforms: [.macOS(.v13)],
     targets: [
         .executableTarget(
-            name: "RedScreen",
+            name: "RedLights",
             path: "Sources"
         )
     ]

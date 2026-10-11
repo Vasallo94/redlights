@@ -1,0 +1,39 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+jobs:
+  macos:
+    runs-on: macos-15
+    permissions:
+      contents: write   # para crear la release al pushear un tag
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # build.sh saca la versión de los tags y el build del nº de commits
+
+      - name: Compilar
+        run: ./build.sh --zip
+
+      - name: Guardar el zip como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: RedLights-macos
+          path: RedLights-*.zip
+
+      - name: Publicar release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          V="${GITHUB_REF_NAME#v}"
+          ZIP="RedLights-$V.zip"
+          shasum -a 256 "$ZIP" > "$ZIP.sha256"
+          # Notas: la sección de esa versión en CHANGELOG.md
+          awk -v v="$V" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/ {f=0} f' CHANGELOG.md > notes.md
+          gh release create "$GITHUB_REF_NAME" "$ZIP" "$ZIP.sha256" \
+            --title "RedLights $V" --notes-file notes.md

@@ -1,6 +1,6 @@
 # Compilación de SwiftPM y app empaquetada
 .build/
-RedScreen.app/
+RedLights.app/
 *.zip
 
 # Xcode / SwiftPM locales

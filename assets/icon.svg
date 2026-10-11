@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a0505"/>
+      <stop offset="1" stop-color="#080000"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.46" r="0.42">
+      <stop offset="0" stop-color="#ff1e0a" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#ff1e0a" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="crescent">
+      <rect width="1024" height="1024" fill="#000"/>
+      <circle cx="470" cy="420" r="200" fill="#fff"/>
+      <circle cx="552" cy="360" r="175" fill="#000"/>
+    </mask>
+    <clipPath id="body"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath>
+  </defs>
+  <!-- Rejilla de icono macOS: 824 px de cuerpo con 100 px de margen -->
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#bg)"/>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#glow)"/>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="#ff2a14" mask="url(#crescent)"/>
+  <g fill="#ff4a30">
+    <circle cx="720" cy="470" r="10"/>
+    <circle cx="330" cy="250" r="7"/>
+    <circle cx="760" cy="300" r="6"/>
+    <circle cx="230" cy="640" r="5"/>
+    <circle cx="640" cy="230" r="4"/>
+  </g>
+  <!-- Horizonte con silueta de telescopio apuntando a la luna -->
+  <path d="M100 790 Q 512 735 924 790 V924 H100 Z" fill="#140101" clip-path="url(#body)"/>
+  <g stroke="#ff2a14" stroke-linecap="round" fill="none">
+    <line x1="700" y1="800" x2="668" y2="880" stroke-width="12"/>
+    <line x1="700" y1="800" x2="734" y2="880" stroke-width="12"/>
+    <line x1="700" y1="800" x2="700" y2="880" stroke-width="12"/>
+    <line x1="775" y1="828" x2="630" y2="742" stroke-width="34"/>
+    <line x1="633" y1="744" x2="616" y2="734" stroke-width="46"/>
+  </g>
+</svg>

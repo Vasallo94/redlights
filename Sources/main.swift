@@ -1,4 +1,4 @@
-// RedScreen — pone todas las pantallas en rojo puro para astronomía (macOS 13+)
+// RedLights — pone todas las pantallas en rojo puro para astronomía (macOS 13+)
 //
 // Cómo funciona: sustituye la tabla gamma de cada pantalla para que el verde y
 // el azul salgan a cero y el rojo escale de 0 a `level`. Así se consigue un rojo
@@ -56,7 +56,7 @@ final class HotKey {
             return noErr
         }, 1, &spec, selfPtr, &handlerRef)
 
-        let id = EventHotKeyID(signature: OSType(0x5244_5343), id: 1) // 'RDSC'
+        let id = EventHotKeyID(signature: OSType(0x5244_4C54), id: 1) // 'RDLT'
         RegisterEventHotKey(keyCode, modifiers, id, GetApplicationEventTarget(), 0, &hotKeyRef)
     }
 
