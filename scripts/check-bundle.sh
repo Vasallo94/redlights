@@ -7,8 +7,8 @@ cd "$(dirname "$0")/.."
 APP="RedLights.app"
 BIN="$APP/Contents/MacOS/RedLights"
 PLIST="$APP/Contents/Info.plist"
-fail() { echo "✗ $*"; exit 1; }
-ok() { echo "✓ $*"; }
+fail() { echo "FAIL: $*"; exit 1; }
+ok() { echo "ok: $*"; }
 
 # Binario universal y firma
 archs="$(lipo -archs "$BIN")"
