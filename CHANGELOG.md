@@ -4,6 +4,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versio
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-12
+
 ### Added
 - **About RedLights** item in the Mac app menu, showing the version.
 - Debian packages (`.deb`) for x86_64 and ARM64, for Debian, Ubuntu and Raspberry Pi OS.
