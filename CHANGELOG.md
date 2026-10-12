@@ -4,6 +4,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versio
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-12
+
 ### Added
 - English and Spanish localization, following the system language (English is the fallback).
 - Install with Homebrew: `brew install --cask vasallo94/tap/redlights`.
