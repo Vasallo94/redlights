@@ -4,6 +4,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versio
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-12
+
 ### Added
 - **System tray app on Linux and Windows**: `redlights tray` shows a moon icon; click it to toggle red mode, right-click for brightness presets. Brightness is remembered between launches, and menus follow the system language (English or Spanish).
 - **Windows**: double-clicking `redlights.exe` starts the tray app without a console window. **Ctrl+Alt+Shift+R** toggles red mode from any app.
