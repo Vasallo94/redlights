@@ -10,7 +10,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versio
 - **Linux**: `redlights toggle` and `redlights status` control the running tray app, so red mode can be bound to a key in any desktop. The `.deb` adds RedLights to the applications menu.
 
 ### Changed
-- Dependabot now also watches Rust dependencies, and CI audits them against the RustSec advisory database.
+- Dependabot now also watches Rust dependencies, and CI checks them with cargo-deny for known vulnerabilities, licenses and sources.
 
 ## [0.3.1] - 2026-10-12
 
