@@ -148,6 +148,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(loginItem)
         menu.addItem(.separator())
 
+        let aboutItem = NSMenuItem(title: NSLocalizedString("About RedLights", comment: "Menu item"),
+                                   action: #selector(showAbout), keyEquivalent: "")
+        aboutItem.target = self
+        menu.addItem(aboutItem)
         menu.addItem(NSMenuItem(title: NSLocalizedString("Quit", comment: "Menu item"),
                                 action: #selector(NSApplication.terminate(_:)),
                                 keyEquivalent: "q"))
@@ -180,6 +184,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func reapply(_ sender: Any?) {
         if enabled { RedFilter.apply(level: level) }
+    }
+
+    @objc private func showAbout() {
+        // Panel estándar de macOS: nombre, icono y versión del Info.plist.
+        NSApp.activate(ignoringOtherApps: true)
+        NSApp.orderFrontStandardAboutPanel(nil)
     }
 
     @objc private func toggleLogin() {

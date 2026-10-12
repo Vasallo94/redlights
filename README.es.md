@@ -46,11 +46,7 @@ Windows 10 u 11, de 64 bits. Descarga [`redlights-windows-x64.zip`](https://gith
 
 ### Verificar las descargas
 
-Cada archivo de una versión trae su suma `.sha256` y una attestation de procedencia de GitHub, que demuestra que lo compiló el CI de este repositorio:
-
-```bash
-gh attestation verify redlights-linux-x86_64.tar.gz --repo Vasallo94/redlights
-```
+Cada archivo de una versión trae una suma SHA-256 y una attestation de procedencia de GitHub que lo vincula con el código y la compilación que lo generaron. En [SECURITY.md](SECURITY.md#verifying-downloads) se explica cómo comprobarlas y en qué punto está la firma de código.
 
 ## Uso
 
@@ -113,29 +109,9 @@ La app de Mac es un único archivo Swift, [`Sources/main.swift`](Sources/main.sw
 - [ ] Elegir qué pantallas se ponen en rojo, por ejemplo el portátil en rojo y el monitor externo apagado
 - [ ] Activación automática con el crepúsculo astronómico de tu ubicación
 
-## Desarrollo
+## Contribuir
 
-### Compilar
-
-```bash
-./build.sh                         # app de macOS; solo necesita las Command Line Tools (xcode-select --install)
-cd rust && cargo build --release   # herramienta de Linux y Windows
-```
-
-### Tests
-
-El CI se ejecuta en cada pull request:
-
-- macOS: compila la app, revisa el bundle (binario universal, firma, versión, traducciones) y comprueba que arranca.
-- Linux, x86_64 y ARM64: formato, Clippy, tests unitarios y tests de integración contra un servidor X real y GNOME Mutter.
-- Windows: Clippy, tests unitarios y un test de integración que aplica la matriz de color y la vuelve a leer.
-
-### Publicar una versión
-
-1. Añade una sección `## [x.y.z] - AAAA-MM-DD` a [`CHANGELOG.md`](CHANGELOG.md) y fusiónala en `main` con un pull request.
-2. Crea el tag sobre ese commit: `git tag vx.y.z && git push origin vx.y.z`.
-
-El CI compila todas las plataformas, publica la versión con sumas de verificación y attestations, y usa la sección del CHANGELOG como notas. El número de versión sale del tag y no está escrito en ningún archivo. El [tap de Homebrew](https://github.com/Vasallo94/homebrew-tap) recoge las versiones nuevas solo en menos de un día.
+Los informes de errores, las pruebas en hardware real y los pull requests son bienvenidos. [Abre una issue](https://github.com/Vasallo94/redlights/issues/new/choose) con uno de los formularios, o lee [CONTRIBUTING.md](CONTRIBUTING.md) (en inglés) para preparar el proyecto, ejecutar los tests y enviar un pull request. Se espera que todo el mundo respete el [código de conducta](CODE_OF_CONDUCT.md).
 
 ## Licencia
 

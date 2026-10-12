@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest an idea or improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What do you want to do?
+      description: The situation or problem, for example during an observing or imaging session.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: How could RedLights help?
+      description: Your idea, and any alternatives you have considered.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platforms
+      multiple: true
+      options: [macOS, Linux, Windows]
