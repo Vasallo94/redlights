@@ -5,6 +5,8 @@ use crate::Result;
 
 #[cfg(target_os = "linux")]
 mod mutter;
+#[cfg(windows)]
+mod windows;
 #[cfg(target_os = "linux")]
 mod wlr;
 #[cfg(target_os = "linux")]
@@ -26,7 +28,11 @@ pub fn detect() -> Result<Box<dyn Backend>> {
     let env = |k| std::env::var_os(k).is_some_and(|v| !v.is_empty());
     match std::env::var("REDLIGHTS_BACKEND").as_deref() {
         Ok("x11") => return Ok(Box::new(x11::X11::new()?)),
-        Ok("wlr") => return Ok(Box::new(wlr::Wlr::new()?.ok_or("compositor doesn't support wlr-gamma-control")?)),
+        Ok("wlr") => {
+            return Ok(Box::new(
+                wlr::Wlr::new()?.ok_or("compositor doesn't support wlr-gamma-control")?,
+            ));
+        }
         Ok("mutter") => return Ok(Box::new(mutter::Mutter::new()?)),
         Ok(other) => return Err(format!("unknown backend '{other}' (x11, wlr, mutter)").into()),
         Err(_) => {}
@@ -50,7 +56,12 @@ pub fn detect() -> Result<Box<dyn Backend>> {
     Err("no graphical session found (neither WAYLAND_DISPLAY nor DISPLAY is set)".into())
 }
 
-#[cfg(not(target_os = "linux"))]
+#[cfg(windows)]
+pub fn detect() -> Result<Box<dyn Backend>> {
+    Ok(Box::new(windows::Magnifier::new()?))
+}
+
+#[cfg(not(any(target_os = "linux", windows)))]
 pub fn detect() -> Result<Box<dyn Backend>> {
     Err("this platform isn't supported yet (on macOS, use the RedLights app)".into())
 }

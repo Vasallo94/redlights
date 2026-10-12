@@ -35,7 +35,10 @@ impl X11 {
         Ok(Self { conn, crtcs })
     }
 
-    fn set_all(&self, ramps: impl Fn(usize, usize) -> (Vec<u16>, Vec<u16>, Vec<u16>)) -> Result<()> {
+    fn set_all(
+        &self,
+        ramps: impl Fn(usize, usize) -> (Vec<u16>, Vec<u16>, Vec<u16>),
+    ) -> Result<()> {
         for (i, (crtc, size, _)) in self.crtcs.iter().enumerate() {
             let (r, g, b) = ramps(i, *size);
             self.conn.randr_set_crtc_gamma(*crtc, &r, &g, &b)?.check()?;
@@ -77,14 +80,24 @@ mod tests {
     fn apply_restore_reset_roundtrip() {
         let mut b = X11::new().unwrap();
         let read = |b: &X11| -> Vec<[Vec<u16>; 3]> {
-            b.crtcs.iter().map(|(c, _, _)| {
-                let g = b.conn.randr_get_crtc_gamma(*c).unwrap().reply().unwrap();
-                [g.red, g.green, g.blue]
-            }).collect()
+            b.crtcs
+                .iter()
+                .map(|(c, _, _)| {
+                    let g = b.conn.randr_get_crtc_gamma(*c).unwrap().reply().unwrap();
+                    [g.red, g.green, g.blue]
+                })
+                .collect()
         };
 
         // Punto de partida conocido: una rampa que no es ni la identidad ni roja.
-        b.set_all(|_, n| (redlights::ramp(n, 0.9), redlights::ramp(n, 0.8), redlights::ramp(n, 0.7))).unwrap();
+        b.set_all(|_, n| {
+            (
+                redlights::ramp(n, 0.9),
+                redlights::ramp(n, 0.8),
+                redlights::ramp(n, 0.7),
+            )
+        })
+        .unwrap();
         b.crtcs = X11::new().unwrap().crtcs; // re-guardar esa rampa como "original"
         let original = read(&b);
 
@@ -100,7 +113,11 @@ mod tests {
         b.reset().unwrap();
         for (crtc, [r, g, bl]) in b.crtcs.iter().zip(read(&b)) {
             let id = redlights::ramp(crtc.1, 1.0);
-            assert_eq!((r, g, bl), (id.clone(), id.clone(), id), "reset deja la identidad");
+            assert_eq!(
+                (r, g, bl),
+                (id.clone(), id.clone(), id),
+                "reset deja la identidad"
+            );
         }
     }
 }

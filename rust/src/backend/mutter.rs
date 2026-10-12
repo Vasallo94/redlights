@@ -32,7 +32,10 @@ impl Mutter {
             "/org/gnome/Mutter/DisplayConfig",
             "org.gnome.Mutter.DisplayConfig",
         )?;
-        let mut me = Self { proxy, saved: Vec::new() };
+        let mut me = Self {
+            proxy,
+            saved: Vec::new(),
+        };
         let (serial, crtcs) = me.active_crtcs()?;
         if crtcs.is_empty() {
             return Err("Mutter: no active displays".into());
@@ -48,13 +51,24 @@ impl Mutter {
     fn active_crtcs(&self) -> Result<(u32, Vec<u32>)> {
         let (serial, crtcs, _, _, _, _): (u32, Vec<Crtc>, Vec<Output>, Vec<Mode>, i32, i32) =
             self.proxy.call("GetResources", &())?;
-        Ok((serial, crtcs.into_iter().filter(|c| c.6 >= 0).map(|c| c.0).collect()))
+        Ok((
+            serial,
+            crtcs
+                .into_iter()
+                .filter(|c| c.6 >= 0)
+                .map(|c| c.0)
+                .collect(),
+        ))
     }
 
     fn set_all(&self, ramps: impl Fn(u32, usize) -> Ramps) -> Result<()> {
         let (serial, crtcs) = self.active_crtcs()?;
         for crtc in crtcs {
-            let size = self.saved.iter().find(|(c, _)| *c == crtc).map_or(256, |(_, r)| r.0.len());
+            let size = self
+                .saved
+                .iter()
+                .find(|(c, _)| *c == crtc)
+                .map_or(256, |(_, r)| r.0.len());
             let (r, g, b) = ramps(crtc, size);
             let () = self.proxy.call("SetCrtcGamma", &(serial, crtc, r, g, b))?;
         }
@@ -96,7 +110,10 @@ mod tests {
         let mut b = Mutter::new().unwrap();
         let read = |b: &Mutter| -> Vec<Ramps> {
             let (serial, crtcs) = b.active_crtcs().unwrap();
-            crtcs.iter().map(|c| b.proxy.call("GetCrtcGamma", &(serial, *c)).unwrap()).collect()
+            crtcs
+                .iter()
+                .map(|c| b.proxy.call("GetCrtcGamma", &(serial, *c)).unwrap())
+                .collect()
         };
         let original: Vec<Ramps> = b.saved.iter().map(|(_, r)| r.clone()).collect();
 
@@ -111,7 +128,11 @@ mod tests {
 
         b.reset().unwrap();
         for ramps in read(&b) {
-            assert_eq!(ramps, redlights::identity_ramps(ramps.0.len()), "reset deja la identidad");
+            assert_eq!(
+                ramps,
+                redlights::identity_ramps(ramps.0.len()),
+                "reset deja la identidad"
+            );
         }
     }
 }

@@ -52,13 +52,24 @@ impl Wlr {
         for output in &outputs {
             let idx = state.controls.len();
             let ctrl = manager.get_gamma_control(output, &qh, idx);
-            state.controls.push(Control { ctrl, size: 0, failed: false });
+            state.controls.push(Control {
+                ctrl,
+                size: 0,
+                failed: false,
+            });
         }
         queue.roundtrip(&mut state)?; // recibe gamma_size o failed de cada salida
 
-        let usable = state.controls.iter().filter(|c| !c.failed && c.size > 0).count();
+        let usable = state
+            .controls
+            .iter()
+            .filter(|c| !c.failed && c.size > 0)
+            .count();
         if usable == 0 {
-            return Err("the compositor supports wlr-gamma-control, but no display accepts gamma tables".into());
+            return Err(
+                "the compositor supports wlr-gamma-control, but no display accepts gamma tables"
+                    .into(),
+            );
         }
         Ok(Some(Self { queue, state }))
     }
@@ -70,10 +81,20 @@ impl Backend for Wlr {
     }
 
     fn apply(&mut self, level: f32) -> Result<()> {
-        for c in self.state.controls.iter().filter(|c| !c.failed && c.size > 0) {
+        for c in self
+            .state
+            .controls
+            .iter()
+            .filter(|c| !c.failed && c.size > 0)
+        {
             // Tabla: size×u16 rojo, luego verde, luego azul, en orden de bytes nativo.
             let (r, g, b) = redlights::red_ramps(c.size, level);
-            let bytes: Vec<u8> = r.iter().chain(&g).chain(&b).flat_map(|v| v.to_ne_bytes()).collect();
+            let bytes: Vec<u8> = r
+                .iter()
+                .chain(&g)
+                .chain(&b)
+                .flat_map(|v| v.to_ne_bytes())
+                .collect();
             let fd = memfd_create("redlights-gamma", MemfdFlags::CLOEXEC)?;
             let mut file = std::fs::File::from(fd);
             file.write_all(&bytes)?;
@@ -102,25 +123,53 @@ impl Backend for Wlr {
 }
 
 impl Dispatch<WlRegistry, GlobalListContents> for State {
-    fn event(_: &mut Self, _: &WlRegistry, _: <WlRegistry as wayland_client::Proxy>::Event,
-             _: &GlobalListContents, _: &Connection, _: &QueueHandle<Self>) {}
+    fn event(
+        _: &mut Self,
+        _: &WlRegistry,
+        _: <WlRegistry as wayland_client::Proxy>::Event,
+        _: &GlobalListContents,
+        _: &Connection,
+        _: &QueueHandle<Self>,
+    ) {
+    }
 }
 
 impl Dispatch<WlOutput, ()> for State {
-    fn event(_: &mut Self, _: &WlOutput, _: <WlOutput as wayland_client::Proxy>::Event,
-             _: &(), _: &Connection, _: &QueueHandle<Self>) {}
+    fn event(
+        _: &mut Self,
+        _: &WlOutput,
+        _: <WlOutput as wayland_client::Proxy>::Event,
+        _: &(),
+        _: &Connection,
+        _: &QueueHandle<Self>,
+    ) {
+    }
 }
 
 impl Dispatch<ZwlrGammaControlManagerV1, ()> for State {
-    fn event(_: &mut Self, _: &ZwlrGammaControlManagerV1,
-             _: <ZwlrGammaControlManagerV1 as wayland_client::Proxy>::Event,
-             _: &(), _: &Connection, _: &QueueHandle<Self>) {}
+    fn event(
+        _: &mut Self,
+        _: &ZwlrGammaControlManagerV1,
+        _: <ZwlrGammaControlManagerV1 as wayland_client::Proxy>::Event,
+        _: &(),
+        _: &Connection,
+        _: &QueueHandle<Self>,
+    ) {
+    }
 }
 
 impl Dispatch<ZwlrGammaControlV1, usize> for State {
-    fn event(state: &mut Self, _: &ZwlrGammaControlV1, event: zwlr_gamma_control_v1::Event,
-             idx: &usize, _: &Connection, _: &QueueHandle<Self>) {
-        let Some(c) = state.controls.get_mut(*idx) else { return };
+    fn event(
+        state: &mut Self,
+        _: &ZwlrGammaControlV1,
+        event: zwlr_gamma_control_v1::Event,
+        idx: &usize,
+        _: &Connection,
+        _: &QueueHandle<Self>,
+    ) {
+        let Some(c) = state.controls.get_mut(*idx) else {
+            return;
+        };
         match event {
             zwlr_gamma_control_v1::Event::GammaSize { size } => c.size = size as usize,
             zwlr_gamma_control_v1::Event::Failed => c.failed = true,

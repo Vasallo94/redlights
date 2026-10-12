@@ -40,7 +40,9 @@ fn run() -> Result<()> {
             println!("Colors restored ({})", b.name());
         }
         [] | ["on"] => on(0.5)?,
-        [v] | ["on", v] => on(v.parse().map_err(|_| format!("invalid brightness '{v}'\n\n{USAGE}"))?)?,
+        [v] | ["on", v] => on(v
+            .parse()
+            .map_err(|_| format!("invalid brightness '{v}'\n\n{USAGE}"))?)?,
         _ => return Err(USAGE.into()),
     }
     Ok(())
@@ -58,7 +60,11 @@ fn on(slider: f64) -> Result<()> {
     ctrlc::set_handler(move || r.store(false, Ordering::SeqCst))?;
 
     b.apply(level)?;
-    println!("Red mode on at {:.0}% ({}). Ctrl-C to restore.", slider * 100.0, b.name());
+    println!(
+        "Red mode on at {:.0}% ({}). Ctrl-C to restore.",
+        slider * 100.0,
+        b.name()
+    );
 
     let mut last = Instant::now();
     while running.load(Ordering::SeqCst) {

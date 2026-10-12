@@ -22,7 +22,9 @@ pub fn ramp(size: usize, level: f32) -> Vec<u16> {
         return vec![0; size];
     }
     let max = f64::from(level.clamp(0.0, 1.0)) * 65535.0;
-    (0..size).map(|i| (max * i as f64 / (size - 1) as f64).round() as u16).collect()
+    (0..size)
+        .map(|i| (max * i as f64 / (size - 1) as f64).round() as u16)
+        .collect()
 }
 
 /// Rampas (rojo, verde, azul) del filtro rojo.
@@ -55,6 +57,21 @@ pub fn matrix(level: f32, mode: Mode) -> [[f32; 3]; 3] {
     [red_row, [0.0; 3], [0.0; 3]]
 }
 
+/// Matriz 5×5 en el formato de GDI+ y de la API de Magnificación de Windows:
+/// vector fila (salida = entrada · M), así que cada **fila** es un canal de
+/// entrada. Es la traspuesta de [`matrix`], ampliada con alfa y traslación.
+pub fn row_vector_5x5(m: [[f32; 3]; 3]) -> [f32; 25] {
+    let mut t = [0.0; 25];
+    for input in 0..3 {
+        for output in 0..3 {
+            t[input * 5 + output] = m[output][input];
+        }
+    }
+    t[18] = 1.0; // alfa → alfa
+    t[24] = 1.0; // fila de traslación
+    t
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -81,6 +98,17 @@ mod tests {
         let (r, g, b) = red_ramps(256, 0.3);
         assert!(r[255] > 0);
         assert!(g.iter().chain(&b).all(|&v| v == 0));
+    }
+
+    #[test]
+    fn row_vector_is_transposed() {
+        let id = row_vector_5x5([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]);
+        let expected_id: [f32; 25] = std::array::from_fn(|i| if i % 6 == 0 { 1.0 } else { 0.0 });
+        assert_eq!(id, expected_id);
+        // Luminancia → rojo: la columna 0 (salida roja) lleva los pesos; el resto a 0
+        let t = row_vector_5x5(matrix(1.0, Mode::Luma));
+        assert_eq!([t[0], t[5], t[10]], [0.2126, 0.7152, 0.0722]);
+        assert_eq!([t[1], t[2], t[6], t[7], t[11], t[12]], [0.0; 6]);
     }
 
     #[test]

@@ -586,6 +586,7 @@ dependencies = [
  "rustix",
  "wayland-client",
  "wayland-protocols-wlr",
+ "windows-sys",
  "x11rb",
  "zbus",
 ]
