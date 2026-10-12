@@ -50,7 +50,11 @@ It installs into Applications, ready to open without the Gatekeeper warning, and
    xattr -dr com.apple.quarantine /Applications/RedLights.app
    ```
 
-Each release also ships a `.sha256` so you can check the download with `shasum -a 256 -c RedLights-x.y.z.zip.sha256`.
+Each release also ships a `.sha256` so you can check the download with `shasum -a 256 -c RedLights-x.y.z.zip.sha256`. Releases are also attested by GitHub, so you can verify the zip was built by this repo's CI:
+
+```bash
+gh attestation verify RedLights-x.y.z.zip --repo Vasallo94/redlights
+```
 
 ### Build from source
 
