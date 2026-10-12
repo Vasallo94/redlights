@@ -15,7 +15,7 @@
 Cambia los colores que emite la propia pantalla: no hace capturas, no pone ventanas encima y no necesita permisos especiales. Todo se vuelve rojo, incluido el cursor, y los colores normales vuelven al desactivarlo.
 
 - **macOS**: app de barra de menú con atajo global (⌃⌥⌘R) y regulador de brillo.
-- **Linux y Windows**: una pequeña herramienta de línea de comandos, `redlights`.
+- **Linux y Windows**: una app de bandeja del sistema (con atajo global en Windows) que también funciona como herramienta de línea de comandos, `redlights`.
 
 ## Instalación
 
@@ -58,7 +58,7 @@ scoop bucket add vasallo94 https://github.com/Vasallo94/scoop-bucket
 scoop install redlights
 ```
 
-O descarga [`redlights-windows-x64.zip`](https://github.com/Vasallo94/redlights/releases/latest/download/redlights-windows-x64.zip), descomprímelo y ejecuta `redlights.exe`. El ejecutable no está firmado, así que SmartScreen puede avisar la primera vez: elige **Más información → Ejecutar de todas formas**.
+O descarga [`redlights-windows-x64.zip`](https://github.com/Vasallo94/redlights/releases/latest/download/redlights-windows-x64.zip), descomprímelo y haz doble clic en `redlights.exe`. El ejecutable no está firmado, así que SmartScreen puede avisar la primera vez: elige **Más información → Ejecutar de todas formas**.
 
 ### Verificar las descargas
 
@@ -74,15 +74,37 @@ Cada archivo de una versión trae una suma SHA-256 y una attestation de proceden
 | Ajustar el brillo | Regulador del menú. Las teclas de brillo del Mac siguen funcionando y se combinan con él |
 | Arrancar al iniciar sesión | **Abrir al iniciar sesión** en el menú |
 
-### Linux y Windows
+### Windows
+
+Haz doble clic en `redlights.exe` y aparecerá una luna en la bandeja del sistema, junto al reloj:
+
+| Acción | Cómo |
+|---|---|
+| Activar o desactivar el modo rojo | **Ctrl+Alt+Shift+R** desde cualquier app, o clic en el icono |
+| Brillo y salir | Clic derecho en el icono |
+
+### Linux
+
+Abre **RedLights** desde el menú de aplicaciones (lo instala el `.deb`) o ejecuta `redlights tray`. Aparecerá una luna en la bandeja del sistema: clic para activar o desactivar, clic derecho para el brillo. En GNOME, los iconos de bandeja necesitan la [extensión AppIndicator](https://extensions.gnome.org/extension/615/appindicator-support/), que Ubuntu ya trae.
+
+Wayland no deja que las apps registren atajos globales, así que asigna `redlights toggle` a una tecla en los ajustes de teclado de tu escritorio:
+
+| Escritorio | Dónde |
+|---|---|
+| GNOME | Configuración → Teclado → Atajos personalizados → comando `redlights toggle` |
+| KDE Plasma | Preferencias del sistema → Atajos → Añadir nuevo → Orden |
+| Sway, i3 | `bindsym Ctrl+Alt+Shift+r exec redlights toggle` |
+| Hyprland | `bind = CTRL ALT SHIFT, R, exec, redlights toggle` |
+
+### Línea de comandos (Linux y Windows)
 
 ```bash
 redlights          # rojo al 50 % de brillo hasta pulsar Ctrl-C
 redlights 0.3      # brillo de 0 a 1, con la misma curva que el regulador del Mac
+redlights tray     # en la bandeja del sistema
+redlights toggle   # activa o desactiva el modo rojo de la bandeja en marcha (Linux)
 redlights reset    # colores normales si una pantalla se quedó en rojo
 ```
-
-En Windows también puedes hacer doble clic en `redlights.exe`: la pantalla se queda en rojo mientras su ventana esté abierta, y al cerrarla vuelven los colores normales.
 
 ## ¿Por qué rojo?
 
@@ -120,7 +142,7 @@ La app de Mac es un único archivo Swift, [`Sources/main.swift`](Sources/main.sw
 - [x] Linux: X11, GNOME, wlroots
 - [x] Windows
 - [ ] KDE Plasma en Wayland
-- [ ] Icono en la bandeja y atajo global en Linux y Windows
+- [x] Icono en la bandeja en Linux y Windows, atajo global en Windows
 - [ ] Modo luminancia: el rojo sigue el brillo de cada color, para que el texto azul o verde siga siendo legible
 - [ ] Elegir qué pantallas se ponen en rojo, por ejemplo el portátil en rojo y el monitor externo apagado
 - [ ] Activación automática con el crepúsculo astronómico de tu ubicación

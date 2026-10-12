@@ -72,6 +72,39 @@ pub fn row_vector_5x5(m: [[f32; 3]; 3]) -> [f32; 25] {
     t
 }
 
+/// Posiciones del regulador que ofrece el menú de la bandeja (en una bandeja no
+/// cabe un regulador continuo). Mismo significado que el del Mac: 0.5 = «50 %».
+pub const BRIGHTNESS_PRESETS: [f64; 6] = [0.1, 0.2, 0.3, 0.5, 0.75, 1.0];
+
+/// Icono de la bandeja en RGBA: luna creciente roja (activo) o gris (inactivo).
+/// Se dibuja aquí para no depender de librerías de imágenes; 4×4 submuestras por
+/// píxel suavizan el borde.
+pub fn tray_icon_rgba(size: u32, on: bool) -> Vec<u8> {
+    let [r, g, b] = if on {
+        [0xff, 0x2a, 0x14]
+    } else {
+        [0x9a, 0x9a, 0x9a]
+    };
+    let n = size as f32;
+    let inside = |x: f32, y: f32| {
+        let d = |cx: f32, cy: f32| ((x - cx).powi(2) + (y - cy).powi(2)).sqrt();
+        d(0.5, 0.5) <= 0.42 && d(0.68, 0.34) > 0.34 // disco menos el disco que lo «muerde»
+    };
+    let mut px = Vec::with_capacity((size * size * 4) as usize);
+    for j in 0..size {
+        for i in 0..size {
+            let hits = (0..16)
+                .filter(|k| {
+                    let (sx, sy) = ((k % 4) as f32 + 0.5, (k / 4) as f32 + 0.5);
+                    inside((i as f32 + sx / 4.0) / n, (j as f32 + sy / 4.0) / n)
+                })
+                .count();
+            px.extend_from_slice(&[r, g, b, (hits * 255 / 16) as u8]);
+        }
+    }
+    px
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -109,6 +142,26 @@ mod tests {
         let t = row_vector_5x5(matrix(1.0, Mode::Luma));
         assert_eq!([t[0], t[5], t[10]], [0.2126, 0.7152, 0.0722]);
         assert_eq!([t[1], t[2], t[6], t[7], t[11], t[12]], [0.0; 6]);
+    }
+
+    #[test]
+    fn tray_icon_is_a_crescent() {
+        let px = tray_icon_rgba(32, true);
+        assert_eq!(px.len(), 32 * 32 * 4);
+        let alpha = |x: usize, y: usize| px[(y * 32 + x) * 4 + 3];
+        assert_eq!(alpha(0, 0), 0, "esquina transparente");
+        assert_eq!(alpha(5, 16), 255, "borde izquierdo de la luna, opaco");
+        assert_eq!(alpha(22, 10), 0, "la parte «mordida», transparente");
+        assert_eq!(
+            &px[(16 * 32 + 5) * 4..][..3],
+            &[0xff, 0x2a, 0x14],
+            "rojo si está activo"
+        );
+        assert_ne!(
+            tray_icon_rgba(32, false)[(16 * 32 + 5) * 4],
+            0xff,
+            "gris si no"
+        );
     }
 
     #[test]

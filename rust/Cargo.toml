@@ -28,17 +28,23 @@ assets = [
     ["target/release/redlights", "usr/bin/", "755"],
     ["../LICENSE", "usr/share/doc/redlights/", "644"],
     ["README.md", "usr/share/doc/redlights/", "644"],
+    ["packaging/redlights.desktop", "usr/share/applications/", "644"],
+    ["../assets/icon.svg", "usr/share/icons/hicolor/scalable/apps/redlights.svg", "644"],
 ]
 
 [dependencies]
 ctrlc = { version = "3.5.2", features = ["termination"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
+ksni = { version = "0.3.6", default-features = false, features = ["async-io", "blocking"] }
 rustix = { version = "1.1.5", features = ["fs"] }
+serde = "1.0.229"
 wayland-client = "0.31.15"
 wayland-protocols-wlr = { version = "0.3.12", features = ["client"] }
 x11rb = { version = "0.14.0", features = ["randr"] }
 zbus = { version = "5.19.0", default-features = false, features = ["blocking-api", "async-io"] }
 
 [target."cfg(windows)".dependencies]
-windows-sys = { version = "0.61.2", features = ["Win32_UI_Magnification", "Win32_Foundation"] }
+global-hotkey = "0.8.0"
+tray-icon = "0.26.1"
+windows-sys = { version = "0.61.2", features = ["Win32_UI_Magnification", "Win32_Foundation", "Win32_System_Console", "Win32_Globalization", "Win32_UI_WindowsAndMessaging"] }

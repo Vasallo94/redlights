@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=RedLights
+GenericName=Red screen filter
+GenericName[es]=Filtro de pantalla rojo
+Comment=Turn every display red for astronomy without losing your night vision
+Comment[es]=Pon todas las pantallas en rojo para astronomía sin perder la visión nocturna
+Exec=redlights tray
+Icon=redlights
+Terminal=false
+Categories=Science;Astronomy;
+Keywords=astronomy;astrophotography;night;red;filter;
+StartupNotify=false
