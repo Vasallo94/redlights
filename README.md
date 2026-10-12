@@ -30,6 +30,14 @@ Night Shift o el modo oscuro no bastan: siguen emitiendo verde y azul, que es ju
 
 ## Instalación
 
+### Homebrew (recomendado)
+
+```bash
+brew install --cask vasallo94/tap/redlights
+```
+
+Se instala en Aplicaciones, ya preparada para abrirse sin el aviso de Gatekeeper, y se actualiza con `brew upgrade`.
+
 ### Descargar
 
 1. Baja `RedLights-x.y.z.zip` de la [última versión](https://github.com/Vasallo94/redlights/releases/latest), descomprímelo y arrastra `RedLights.app` a **Aplicaciones**.
