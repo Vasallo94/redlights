@@ -1,7 +1,16 @@
-# Mantiene al día las acciones de GitHub de los workflows (abre PRs semanales).
+# Abre PRs semanales para mantener al día las dependencias.
 version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+
+  - package-ecosystem: cargo
+    directory: /rust
+    schedule:
+      interval: weekly
+    groups:
+      rust:            # un solo PR para todas las actualizaciones menores
+        patterns: ["*"]
+        update-types: [minor, patch]

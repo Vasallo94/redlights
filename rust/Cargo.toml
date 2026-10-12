@@ -1,6 +1,8 @@
 [package]
 name = "redlights"
-version = "0.1.0"
+# La versión real sale del tag de git: el CI la pasa en REDLIGHTS_VERSION al binario
+# y en --deb-version al paquete. Este número no se usa y no hay que actualizarlo.
+version = "0.0.0"
 edition = "2024"
 description = "Turn every display pure red for astronomy without losing your night vision"
 license = "MIT"
