@@ -1,6 +1,29 @@
 # RedLights en Linux
 
-Estado: investigación (octubre de 2026). Nada de esto está probado todavía en hardware real.
+## Estado de la implementación (2026-10-12)
+
+CLI en Rust en `rust/`, pensada para crecer a Windows: un núcleo común (`src/lib.rs`: curva de brillo, rampas gamma y matriz de color) y un backend por mecanismo (`src/backend/`).
+
+```bash
+redlights [on] [BRILLO]   # rojo hasta Ctrl-C o SIGTERM, y restaura
+redlights reset           # recupera colores normales si algo se quedó en rojo
+REDLIGHTS_BACKEND=x11|wlr|mutter redlights   # forzar backend
+```
+
+| Backend | Estado |
+|---|---|
+| X11 (RandR) | ✅ Verificado en Xvfb: aplica, restaura la rampa original y `reset` deja la identidad (test de integración) |
+| GNOME (Mutter D-Bus) | ✅ Verificado con Mutter 48 en modo X11: aplica, restaura y resetea (test de integración) |
+| wlroots (`wlr-gamma-control`) | ⚠️ Protocolo verificado con Sway 1.10 headless (se negocia y se maneja el `failed`), pero las salidas virtuales no admiten gamma: falta probarlo con pantalla real |
+| KDE Plasma | ❌ Pendiente (perfil ICC con VCGT) |
+
+El CI ejecuta Clippy, los tests y las integraciones de X11 y Mutter en x86_64 y ARM64.
+
+Falta en hardware real: que se vea rojo, el cursor, Mutter en Wayland (no solo X11), wlroots con una salida real y si Night Light pisa el filtro.
+
+---
+
+Investigación original (octubre de 2026):
 
 En macOS hay una sola API (`CGSetDisplayTransferByFormula`) que vale para todo. En Linux, quién controla la tabla gamma depende del **servidor gráfico o compositor**, y cada uno expone un mecanismo distinto. Una app de terceros no puede tocar el hardware directamente mientras el compositor lo tiene en uso.
 
