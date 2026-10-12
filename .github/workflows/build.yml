@@ -53,20 +53,39 @@ jobs:
       - name: Tests del núcleo
         run: cargo test
 
-      - name: Tests de integración (X11 RandR y GNOME Mutter)
+      - name: Compilar binario estático (musl) y .deb
+        run: |
+          # musl: binario estático que funciona con cualquier glibc (Raspberry Pi OS, Ubuntu 22.04…)
+          T="$(uname -m)-unknown-linux-musl"
+          rustup target add "$T"
+          export REDLIGHTS_VERSION="$(git describe --tags --always | sed 's/^v//')"
+          cargo build --release --target "$T"
+          cargo install cargo-deb --locked --quiet
+          mkdir -p out
+          cp "target/$T/release/redlights" out/
+          cargo deb --no-build --target "$T" --deb-version "$REDLIGHTS_VERSION" -o out/redlights.deb
+          file out/redlights && dpkg-deb -I out/redlights.deb | grep -E "Version|Architecture"
+
+      - name: Tests de integración y prueba del binario publicado (X11 y GNOME Mutter)
         run: |
           export DISPLAY=:99 XDG_RUNTIME_DIR="$(mktemp -d)"
           Xvfb :99 -screen 0 1280x800x24 &
           sleep 2
-          dbus-run-session -- bash -c 'mutter --x11 --replace & sleep 5; cargo test -- --ignored --test-threads=1'
-
-      - name: Compilar
-        run: REDLIGHTS_VERSION="$(git describe --tags --always | sed 's/^v//')" cargo build --release
+          dbus-run-session -- bash -c '
+            set -e
+            mutter --x11 --replace & sleep 5
+            cargo test -- --ignored --test-threads=1
+            # El binario estático real: aplica, recibe SIGTERM, restaura y sale con 0
+            for b in x11 mutter; do
+              REDLIGHTS_BACKEND=$b timeout --preserve-status 3 out/redlights 0.5
+              REDLIGHTS_BACKEND=$b out/redlights reset
+            done
+            out/redlights --version'
 
       - uses: actions/upload-artifact@v7
         with:
           name: redlights-linux-${{ runner.arch }}
-          path: rust/target/release/redlights
+          path: rust/out/*
 
   windows:
     runs-on: windows-2025
@@ -131,6 +150,8 @@ jobs:
             chmod +x "$dir/redlights"   # los artefactos pierden el bit de ejecución
             tar -czf "dist/redlights-linux-${pair##*:}.tar.gz" -C "$dir" redlights -C "$GITHUB_WORKSPACE" LICENSE
           done
+          mv redlights-linux-X64/redlights.deb dist/redlights-linux-amd64.deb
+          mv redlights-linux-ARM64/redlights.deb dist/redlights-linux-arm64.deb
           zip -j "dist/redlights-windows-x64.zip" redlights-windows-x64/redlights.exe LICENSE
           cd dist && for f in *; do shasum -a 256 "$f" > "$f.sha256"; done && ls -l
 
@@ -140,6 +161,7 @@ jobs:
           subject-path: |
             dist/*.zip
             dist/*.tar.gz
+            dist/*.deb
 
       - name: Publicar release
         env:
