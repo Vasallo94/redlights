@@ -38,6 +38,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleIdentifier</key>      <string>${BUNDLE_ID}</string>
     <key>CFBundleExecutable</key>      <string>${NAME}</string>
     <key>CFBundleIconFile</key>        <string>AppIcon</string>
+    <key>NSHumanReadableCopyright</key><string>© 2026 Vasallo94 · MIT License</string>
     <key>CFBundleDevelopmentRegion</key><string>en</string>
     <key>CFBundleLocalizations</key>   <array><string>en</string><string>es</string></array>
     <key>CFBundlePackageType</key>     <string>APPL</string>

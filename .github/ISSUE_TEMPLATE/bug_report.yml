@@ -1,0 +1,46 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Screenshots always show normal colors, so a photo of the screen is the best way to show what you see.
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options: [macOS, Linux, Windows]
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: RedLights version
+      description: "`redlights --version`, or **About RedLights** in the Mac app's menu."
+      placeholder: "0.3.0"
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Operating system and version. On Linux, also the desktop or compositor and the session type (`echo $XDG_SESSION_TYPE`). Mention external monitors, HDR or Night Light/Night Shift if they are involved.
+      placeholder: |
+        Ubuntu 24.04, GNOME 46, Wayland, one external monitor
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Terminal output
+      description: On Linux and Windows, the full output of `redlights`, including any error.
+      render: shell

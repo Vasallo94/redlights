@@ -46,11 +46,7 @@ Windows 10 or 11, 64-bit. Download [`redlights-windows-x64.zip`](https://github.
 
 ### Verifying downloads
 
-Every file in a release comes with a `.sha256` checksum and a GitHub provenance attestation, which proves it was built by this repository's CI:
-
-```bash
-gh attestation verify redlights-linux-x86_64.tar.gz --repo Vasallo94/redlights
-```
+Every release file has a SHA-256 checksum and a GitHub provenance attestation that ties it to the source and build that produced it. See [SECURITY.md](SECURITY.md#verifying-downloads) for how to check them, and for the current state of code signing.
 
 ## Usage
 
@@ -113,29 +109,9 @@ The Mac app is a single Swift file, [`Sources/main.swift`](Sources/main.swift). 
 - [ ] Choose which displays turn red, for example laptop red and external monitor off
 - [ ] Turn on automatically at astronomical twilight for your location
 
-## Development
+## Contributing
 
-### Build
-
-```bash
-./build.sh                         # macOS app, needs only the Command Line Tools (xcode-select --install)
-cd rust && cargo build --release   # Linux and Windows tool
-```
-
-### Tests
-
-CI runs on every pull request:
-
-- macOS: builds the app, checks the bundle (universal binary, signature, version, translations) and that it launches.
-- Linux, x86_64 and ARM64: formatting, Clippy, unit tests, and integration tests against a real X server and GNOME Mutter.
-- Windows: Clippy, unit tests, and an integration test that applies and reads back the color matrix.
-
-### Releasing
-
-1. Add a `## [x.y.z] - YYYY-MM-DD` section to [`CHANGELOG.md`](CHANGELOG.md) and merge it into `main` through a pull request.
-2. Tag the merge commit: `git tag vx.y.z && git push origin vx.y.z`.
-
-CI builds every platform, publishes the release with checksums and attestations, and uses the CHANGELOG section as release notes. The version comes from the tag and is not hardcoded anywhere. The [Homebrew tap](https://github.com/Vasallo94/homebrew-tap) picks up new releases automatically within a day.
+Bug reports, test reports from real hardware and pull requests are welcome. [Open an issue](https://github.com/Vasallo94/redlights/issues/new/choose) using one of the forms, or read [CONTRIBUTING.md](CONTRIBUTING.md) to set up the project, run the tests and send a pull request. Everyone taking part is expected to follow the [code of conduct](CODE_OF_CONDUCT.md).
 
 ## License
 

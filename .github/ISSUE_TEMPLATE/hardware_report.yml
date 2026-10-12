@@ -1,0 +1,57 @@
+name: Hardware test report
+description: Tell us how RedLights works on your setup, good or bad
+title: "Hardware report: "
+labels: [hardware-report]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Reports from real hardware help us know which setups work. Successful reports are just as useful as failures.
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options: [macOS, Linux, Windows]
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: RedLights version
+      placeholder: "0.3.0"
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Setup
+      description: Computer, operating system and version, desktop or compositor on Linux, and displays (built-in, external, HDR).
+      placeholder: MacBook Pro M1 Pro, macOS 26, built-in XDR display and two external monitors
+    validations:
+      required: true
+  - type: dropdown
+    id: red
+    attributes:
+      label: Do all displays turn red?
+      options: ["Yes", Some of them, "No"]
+    validations:
+      required: true
+  - type: dropdown
+    id: cursor
+    attributes:
+      label: Does the mouse cursor turn red too?
+      options: ["Yes", "No, it stays white"]
+    validations:
+      required: true
+  - type: dropdown
+    id: restore
+    attributes:
+      label: Do normal colors come back when you turn it off?
+      options: ["Yes", "No"]
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: Brightness range, flicker, conflicts with Night Light or other apps, error messages.
