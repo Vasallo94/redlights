@@ -104,7 +104,7 @@ Each operating system exposes this differently:
 | Linux, X11 | XRandR gamma ramps | No, run `redlights reset` |
 | Windows | Magnification API color matrix, `MagSetFullscreenColorEffect` | Yes |
 
-The Mac app is a single Swift file, [`Sources/main.swift`](Sources/main.swift). The Linux and Windows tool, in [`rust/`](rust/), has a shared core and one backend per mechanism; the design notes are in [`docs/linux.md`](docs/linux.md).
+The Mac app is a single Swift file, [`Sources/main.swift`](Sources/main.swift). The Linux and Windows tool, in [`rust/`](rust/), has a shared core and one backend per mechanism; the design notes are in [`docs/design.md`](docs/design.md).
 
 ## Known limitations
 

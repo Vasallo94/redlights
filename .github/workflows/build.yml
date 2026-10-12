@@ -93,6 +93,16 @@ jobs:
           name: redlights-linux-${{ runner.arch }}
           path: rust/out/*
 
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Vulnerabilidades conocidas en las dependencias de Rust (RustSec)
+        working-directory: rust
+        run: |
+          cargo install cargo-audit --locked --quiet
+          cargo audit --deny warnings
+
   windows:
     runs-on: windows-2025
     defaults:

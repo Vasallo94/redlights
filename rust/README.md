@@ -1,13 +1,11 @@
-# redlights (Linux CLI)
+# redlights (Linux and Windows)
 
-Rust port of RedLights for Linux (Windows later). See [`docs/linux.md`](../docs/linux.md) for the design and status.
+Command-line tool that turns every display red, for Linux (X11, GNOME, wlroots compositors) and Windows. Installation and usage are in the [main README](../README.md); design and testing notes in [`docs/design.md`](../docs/design.md).
 
 ```bash
 cargo build --release
 ./target/release/redlights 0.5     # red until Ctrl-C, then restore
-./target/release/redlights reset   # recover if a display got stuck red
+./target/release/redlights reset   # recover if a display was left red
 ```
 
-Backends: X11 (RandR), wlroots compositors (`wlr-gamma-control`) and GNOME (Mutter D-Bus). KDE Plasma is planned.
-
-Tests: `cargo test` runs the core tests. `cargo test -- --ignored` also runs the X11 and Mutter integration tests and needs an X server with Mutter running (see the `linux` job in `.github/workflows/build.yml`).
+`cargo test` runs the unit tests. `cargo test -- --ignored` also runs the integration tests, which need a display server: on Linux, an X server with Mutter running; on Windows, a desktop session. See [CONTRIBUTING.md](../CONTRIBUTING.md#linux-and-windows-tool).
