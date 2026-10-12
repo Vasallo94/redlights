@@ -12,10 +12,10 @@ REDLIGHTS_BACKEND=x11|wlr|mutter redlights   # forzar backend
 
 | Backend | Estado |
 |---|---|
-| X11 (RandR) | ✅ Verificado en Xvfb: aplica, restaura la rampa original y `reset` deja la identidad (test de integración) |
-| GNOME (Mutter D-Bus) | ✅ Verificado con Mutter 48 en modo X11: aplica, restaura y resetea (test de integración) |
-| wlroots (`wlr-gamma-control`) | ✅ Verificado con Sway 1.10 sobre **vkms** (driver DRM virtual del kernel): la `GAMMA_LUT` del kernel recibe la rampa roja exacta y vuelve a lineal tras `SIGTERM` y también tras `kill -9` |
-| KDE Plasma | ❌ Pendiente (perfil ICC con VCGT) |
+| X11 (RandR) | Verificado en Xvfb: aplica, restaura la rampa original y `reset` deja la identidad (test de integración) |
+| GNOME (Mutter D-Bus) | Verificado con Mutter 48 en modo X11: aplica, restaura y resetea (test de integración) |
+| wlroots (`wlr-gamma-control`) | Verificado con Sway 1.10 sobre **vkms** (driver DRM virtual del kernel): la `GAMMA_LUT` del kernel recibe la rampa roja exacta y vuelve a lineal tras `SIGTERM` y también tras `kill -9` |
+| KDE Plasma | Pendiente (perfil ICC con VCGT) |
 
 El CI ejecuta Clippy, los tests y las integraciones de X11 y Mutter en x86_64 y ARM64, y la de Windows (API de Magnificación: aplica y lee el efecto) en una máquina Windows real. En Windows, matar el proceso a la fuerza devuelve el efecto a la identidad: se restaura solo.
 
@@ -101,8 +101,8 @@ Si X11 y GNOME responden bien, el siguiente spike es wlroots (en una Raspberry P
 
 Sin pantalla real no se puede ver el rojo, pero sí comprobar que las llamadas funcionan:
 
-- **X11 (Debian 12 + Xvfb)**: `x11_red.py` aplica la rampa correcta (rojo 0→50 %, verde y azul a 0) y, **dentro de la misma conexión**, guardar → rojo → restaurar devuelve exactamente la rampa original. ✅ Leída desde otra conexión después de que el cliente se desconecte, la rampa de Xvfb sale corrupta. Es un fallo de Xvfb, no del spike, pero conviene revisarlo en hardware real.
-- **GNOME (Fedora, Mutter 50.5 `--headless`)**: `org.gnome.Mutter.DisplayConfig` responde a un tercero sin `AccessDenied`. `SetOutputCTM` y `SetCrtcGamma` con ids inexistentes devuelven `InvalidArgs: Invalid output id / Invalid crtc id`, es decir, validan argumentos y no permisos. ✅ Los monitores virtuales del modo headless no aparecen en `GetResources`, así que el efecto real queda pendiente de hardware.
+- **X11 (Debian 12 + Xvfb)**: `x11_red.py` aplica la rampa correcta (rojo 0→50 %, verde y azul a 0) y, **dentro de la misma conexión**, guardar → rojo → restaurar devuelve exactamente la rampa original. Leída desde otra conexión después de que el cliente se desconecte, la rampa de Xvfb sale corrupta. Es un fallo de Xvfb, no del spike, pero conviene revisarlo en hardware real.
+- **GNOME (Fedora, Mutter 50.5 `--headless`)**: `org.gnome.Mutter.DisplayConfig` responde a un tercero sin `AccessDenied`. `SetOutputCTM` y `SetCrtcGamma` con ids inexistentes devuelven `InvalidArgs: Invalid output id / Invalid crtc id`, es decir, validan argumentos y no permisos. Los monitores virtuales del modo headless no aparecen en `GetResources`, así que el efecto real queda pendiente de hardware.
 
 ## Montar un equipo de pruebas
 
