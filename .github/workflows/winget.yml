@@ -31,6 +31,8 @@ jobs:
 
       - name: winget más reciente (el del runner no conoce el último esquema)
         shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}   # el módulo consulta la API de GitHub
         run: |
           # Opcional: si falla, se valida con el winget que trae el runner
           try {
@@ -47,8 +49,11 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           $dir = "winget/manifests/v/Vasallo94/RedLights/$env:VERSION"
-          winget validate --manifest $dir
-          if ($LASTEXITCODE) { throw "winget validate falló" }
+          # Los avisos (p. ej. un winget antiguo que no conoce el esquema) no bloquean;
+          # la prueba definitiva es la instalación de abajo.
+          $v = winget validate --manifest $dir | Out-String
+          Write-Output $v
+          if ($v -notmatch 'Manifest validation succeeded') { throw "winget validate falló" }
           winget settings --enable LocalManifestFiles
           winget install --manifest $dir --accept-package-agreements --accept-source-agreements --disable-interactivity
           if ($LASTEXITCODE) { throw "winget install falló" }
