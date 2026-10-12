@@ -1,15 +1,19 @@
 # Changelog
 
-Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); versionado [SemVer](https://semver.org/lang/es/).
+Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- English and Spanish localization, following the system language (English is the fallback).
+- Install with Homebrew: `brew install --cask vasallo94/tap/redlights`.
+
 ## [0.1.0] - 2026-10-11
 
-### Añadido
-- App de barra de menú que pone todas las pantallas en rojo puro (verde y azul a cero).
-- Regulador de brillo con curva cuadrática, recordado entre arranques.
-- Atajo global ⌃⌥⌘R.
-- Reaplicación automática al despertar, al cambiar de pantallas y cada 2 s.
-- Opción para abrir al iniciar sesión.
-- Binario universal (Apple Silicon + Intel) e icono propio.
+### Added
+- Menu bar app that turns every display pure red (green and blue at zero).
+- Brightness slider with a quadratic curve, remembered across launches.
+- Global shortcut ⌃⌥⌘R.
+- Automatic reapply on wake, on display changes and every 2 s.
+- Open at login option.
+- Universal binary (Apple Silicon + Intel) and app icon.

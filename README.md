@@ -1,57 +1,60 @@
 <p align="center">
-  <img src="assets/banner.svg" alt="RedLights: todas tus pantallas en rojo puro para astronomía" width="100%">
+  <img src="assets/banner.svg" alt="RedLights: every display, pure red, for astronomy" width="100%">
 </p>
 
 <p align="center">
-  <a href="https://github.com/Vasallo94/redlights/releases/latest"><img src="https://img.shields.io/github/v/release/Vasallo94/redlights?color=d42010&label=versi%C3%B3n" alt="Última versión"></a>
+  <a href="https://github.com/Vasallo94/redlights/releases/latest"><img src="https://img.shields.io/github/v/release/Vasallo94/redlights?color=d42010&label=release" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/macOS-13%2B-d42010?logo=apple&logoColor=white" alt="macOS 13+">
-  <img src="https://img.shields.io/badge/Apple%20Silicon%20%2B%20Intel-universal-d42010" alt="Binario universal">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/licencia-MIT-d42010" alt="Licencia MIT"></a>
+  <img src="https://img.shields.io/badge/Apple%20Silicon%20%2B%20Intel-universal-d42010" alt="Universal binary">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-d42010" alt="MIT license"></a>
 </p>
 
-**RedLights** es una app de barra de menú que pone **todas tus pantallas en rojo puro**: verde y azul a cero, y el rojo tan tenue como quieras, incluso por debajo del brillo mínimo del panel. Está pensada para usar el portátil junto al telescopio sin perder la visión nocturna: planetario, software de captura, guiado, mapas…
+<p align="center"><b>English</b> · <a href="README.es.md">Español</a></p>
 
-Un atajo (**⌃⌥⌘R**) y listo. No pide permisos, no hace capturas y no pone ventanas encima.
+**RedLights** is a menu bar app that turns **every display pure red**: green and blue go to zero, and red dims as low as you want, even below the panel's minimum brightness. It's made for using a laptop next to the telescope without ruining your night vision: planetarium apps, capture software, guiding, charts…
 
-## ¿Por qué rojo?
+One shortcut (**⌃⌥⌘R**) and you're done. No permissions, no screen capture, no overlay windows.
 
-De noche ves con los **bastones** de la retina, que tardan entre 20 y 30 minutos en adaptarse del todo a la oscuridad y lo pierden en segundos con un destello de luz blanca. Los bastones apenas responden a la luz roja de onda larga, así que una pantalla en rojo **tenue** te deja leerla sin estropear la adaptación. Por eso las linternas de astronomía son rojas.
+## Why red?
 
-Night Shift o el modo oscuro no bastan: siguen emitiendo verde y azul, que es justo lo que más daña la visión nocturna.
+At night you see with the **rods** in your retina. They take 20–30 minutes to fully adapt to the dark, and a flash of white light undoes that in seconds. Rods barely respond to long-wavelength red light, so a **dim** red screen lets you read it without spoiling your dark adaptation. That's why astronomy flashlights are red.
 
-## Qué hace
+Night Shift and dark mode aren't enough: they still emit green and blue, which is exactly what hurts night vision the most.
 
-- 🔴 **Rojo puro** en todas las pantallas a la vez, incluido el cursor.
-- 🌑 **Brillo regulable** con curva cuadrática, para tener precisión en la zona más tenue. Se suma a las teclas de brillo del Mac: con las dos al mínimo, el rojo baja más de lo que permite el panel.
-- ⌨️ **Atajo global ⌃⌥⌘R** desde cualquier app.
-- 🔁 **Se mantiene activo**: lo reaplica al despertar el Mac, al conectar o desconectar monitores y cada 2 s por si Night Shift o un perfil de color lo pisan.
-- 🛟 **Siempre se puede deshacer**: al salir, o incluso si la app se cierra de golpe, macOS restaura los colores normales.
-- 🚀 Opción para **abrir al iniciar sesión**.
+## Features
 
-## Instalación
+- 🔴 **Pure red** on every display at once, cursor included.
+- 🌑 **Adjustable brightness** with a quadratic curve, for fine control in the dimmest range. It stacks with the Mac's brightness keys: with both at minimum, red goes lower than the panel alone allows.
+- ⌨️ **Global shortcut ⌃⌥⌘R** from any app.
+- 🔁 **Stays on**: reapplied when the Mac wakes, when displays are connected or disconnected, and every 2 s in case Night Shift or a color profile overrides it.
+- 🛟 **Always reversible**: when you quit, or even if the app crashes, macOS restores normal colors.
+- 🚀 **Open at login** option.
+- 🌍 English and Spanish, following your system language.
 
-### Homebrew (recomendado)
+## Install
+
+### Homebrew (recommended)
 
 ```bash
 brew install --cask vasallo94/tap/redlights
 ```
 
-Se instala en Aplicaciones, ya preparada para abrirse sin el aviso de Gatekeeper, y se actualiza con `brew upgrade`.
+It installs into Applications, ready to open without the Gatekeeper warning, and updates with `brew upgrade`.
 
-### Descargar
+### Download
 
-1. Baja `RedLights-x.y.z.zip` de la [última versión](https://github.com/Vasallo94/redlights/releases/latest), descomprímelo y arrastra `RedLights.app` a **Aplicaciones**.
-2. La app está firmada ad-hoc, sin notarizar, así que macOS la bloquea la primera vez. Ve a **Ajustes del Sistema → Privacidad y seguridad** y pulsa **Abrir igualmente**. O, desde Terminal:
+1. Get `RedLights-x.y.z.zip` from the [latest release](https://github.com/Vasallo94/redlights/releases/latest), unzip it and drag `RedLights.app` to **Applications**.
+2. The app is ad-hoc signed and not notarized, so macOS blocks it the first time. Go to **System Settings → Privacy & Security** and click **Open Anyway**. Or, from Terminal:
 
    ```bash
    xattr -dr com.apple.quarantine /Applications/RedLights.app
    ```
 
-Cada versión publica también un `.sha256` para comprobar la descarga con `shasum -a 256 -c RedLights-x.y.z.zip.sha256`.
+Each release also ships a `.sha256` so you can check the download with `shasum -a 256 -c RedLights-x.y.z.zip.sha256`.
 
-### Compilar
+### Build from source
 
-Necesitas macOS 13+ y las Command Line Tools (`xcode-select --install`). No hace falta Xcode.
+You need macOS 13+ and the Command Line Tools (`xcode-select --install`). Xcode is not required.
 
 ```bash
 git clone https://github.com/Vasallo94/redlights.git
@@ -60,44 +63,44 @@ cd redlights
 open RedLights.app
 ```
 
-`./build.sh --zip` genera además el zip listo para distribuir.
+`./build.sh --zip` also produces a zip ready to distribute.
 
-## Uso
+## Usage
 
 | | |
 |---|---|
-| **⌃⌥⌘R** | Activa o desactiva el modo rojo |
-| Luna en la barra de menú | Menú con el interruptor, el regulador de brillo y el inicio automático |
-| Teclas de brillo del Mac | Siguen funcionando y se combinan con el regulador |
+| **⌃⌥⌘R** | Toggle red mode |
+| Moon icon in the menu bar | Menu with the toggle, brightness slider and open at login |
+| Mac brightness keys | Keep working and stack with the slider |
 
-## Cómo funciona
+## How it works
 
-macOS pasa cada color que se dibuja en pantalla por una **tabla gamma** antes de mandarlo al panel. RedLights sustituye esa tabla con `CGSetDisplayTransferByFormula`: el canal rojo va de 0 a tu nivel de brillo, y el verde y el azul se quedan siempre en 0. Como la transformación ocurre al final del todo, afecta a todo lo que ves (apps, vídeo, cursor) sin capturar la pantalla ni superponer ventanas. Por eso no necesita permisos de grabación ni de accesibilidad.
+macOS passes every color drawn on screen through a **gamma table** before sending it to the panel. RedLights replaces that table with `CGSetDisplayTransferByFormula`: the red channel ramps from 0 to your brightness level, and green and blue stay at 0. Because the transform happens at the very end, it affects everything you see (apps, video, cursor) without capturing the screen or drawing windows on top. That's why it needs no screen recording or accessibility permissions.
 
-La tabla pertenece al proceso que la puso: si RedLights termina por la razón que sea, WindowServer devuelve la gamma original. No puedes quedarte con la pantalla en rojo para siempre.
+The table belongs to the process that set it: if RedLights exits for any reason, WindowServer restores the original gamma. You can't get stuck with a red screen.
 
-Todo el código está en un único archivo, [`Sources/main.swift`](Sources/main.swift), de unas 200 líneas.
+All the code lives in a single file, [`Sources/main.swift`](Sources/main.swift), about 200 lines.
 
-## Limitaciones conocidas
+## Known limitations
 
-- Las capturas de pantalla salen con los colores normales: la tabla gamma se aplica después de componer la imagen.
-- Las pantallas en modo HDR o XDR de referencia pueden ignorar o resetear la gamma (pendiente de probar).
-- En Macs Intel antiguos, el cursor por hardware podría no pasar por la tabla gamma y verse blanco. En Apple Silicon sale rojo.
+- Screenshots come out with normal colors: the gamma table is applied after the image is composed.
+- Displays in HDR or XDR reference modes may ignore or reset the gamma (not yet tested).
+- On older Intel Macs the hardware cursor might bypass the gamma table and stay white. On Apple Silicon it turns red.
 
-## Hoja de ruta
+## Roadmap
 
 - [ ] Linux (X11, GNOME, KDE, wlroots)
-- [ ] Elegir qué pantallas se ponen en rojo (p. ej. portátil en rojo y monitor externo apagado)
-- [ ] CLI (`redlights on 0.1`) para automatizar sesiones de captura
-- [ ] Activación automática con el crepúsculo astronómico de tu ubicación
+- [ ] Choose which displays go red (e.g. laptop red, external monitor off)
+- [ ] CLI (`redlights on 0.1`) to script capture sessions
+- [ ] Turn on automatically at astronomical twilight for your location
 
-## Publicar una versión
+## Releasing
 
-1. Añade los cambios a [`CHANGELOG.md`](CHANGELOG.md) bajo una sección `## [x.y.z] - AAAA-MM-DD`.
+1. Add the changes to [`CHANGELOG.md`](CHANGELOG.md) under a `## [x.y.z] - YYYY-MM-DD` section.
 2. `git tag vx.y.z && git push origin vx.y.z`
 
-GitHub Actions compila el binario universal, crea la release con el zip y su SHA-256, y usa como notas esa sección del CHANGELOG. El número de versión sale del tag: no hay que tocarlo en ningún archivo.
+GitHub Actions builds the universal binary, creates the release with the zip and its SHA-256, and uses that CHANGELOG section as release notes. The version number comes from the tag; it isn't hardcoded anywhere. The [Homebrew tap](https://github.com/Vasallo94/homebrew-tap) picks up the new release automatically within a day.
 
-## Licencia
+## License
 
 [MIT](LICENSE) © Vasallo94

@@ -121,7 +121,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func buildMenu() -> NSMenu {
         let menu = NSMenu()
 
-        toggleItem = NSMenuItem(title: "Modo rojo", action: #selector(toggle), keyEquivalent: "r")
+        toggleItem = NSMenuItem(title: NSLocalizedString("Red Mode", comment: "Menu item"), action: #selector(toggle), keyEquivalent: "r")
         toggleItem.keyEquivalentModifierMask = [.command, .option, .control]
         toggleItem.target = self
         menu.addItem(toggleItem)
@@ -142,13 +142,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(sliderItem)
         menu.addItem(.separator())
 
-        loginItem = NSMenuItem(title: "Abrir al iniciar sesión",
+        loginItem = NSMenuItem(title: NSLocalizedString("Open at Login", comment: "Menu item"),
                                action: #selector(toggleLogin), keyEquivalent: "")
         loginItem.target = self
         menu.addItem(loginItem)
         menu.addItem(.separator())
 
-        menu.addItem(NSMenuItem(title: "Salir",
+        menu.addItem(NSMenuItem(title: NSLocalizedString("Quit", comment: "Menu item"),
                                 action: #selector(NSApplication.terminate(_:)),
                                 keyEquivalent: "q"))
         return menu
@@ -193,7 +193,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } catch {
             NSApp.activate(ignoringOtherApps: true)
             let alert = NSAlert()
-            alert.messageText = "No se pudo cambiar el inicio automático"
+            alert.messageText = NSLocalizedString("Couldn’t change the login item", comment: "Alert title")
             alert.informativeText = error.localizedDescription
             alert.runModal()
         }
@@ -202,11 +202,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func updateUI() {
         toggleItem.state = enabled ? .on : .off
-        brightnessLabel.title = "Brillo: \(Int((sliderValue * 100).rounded())) %"
+        brightnessLabel.title = String(format: NSLocalizedString("Brightness: %ld%%", comment: "Slider label"),
+                                       Int((sliderValue * 100).rounded()))
         loginItem.state = SMAppService.mainApp.status == .enabled ? .on : .off
 
         let image = NSImage(systemSymbolName: enabled ? "moon.fill" : "moon",
-                            accessibilityDescription: "Modo rojo")
+                            accessibilityDescription: NSLocalizedString("Red Mode", comment: "Menu item"))
         image?.isTemplate = true
         statusItem.button?.image = image
     }

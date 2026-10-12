@@ -1,0 +1,14 @@
+/* Menu item */
+"Red Mode" = "Modo rojo";
+
+/* Menu item */
+"Open at Login" = "Abrir al iniciar sesión";
+
+/* Menu item */
+"Quit" = "Salir";
+
+/* Alert title */
+"Couldn’t change the login item" = "No se pudo cambiar el inicio automático";
+
+/* Slider label */
+"Brightness: %ld%%" = "Brillo: %ld %%";
