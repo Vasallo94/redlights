@@ -32,9 +32,13 @@ jobs:
       - name: winget más reciente (el del runner no conoce el último esquema)
         shell: pwsh
         run: |
-          Install-PackageProvider -Name NuGet -Force | Out-Null
-          Install-Module Microsoft.WinGet.Client -Force -Repository PSGallery
-          Repair-WinGetPackageManager -AllUsers -Latest
+          # Opcional: si falla, se valida con el winget que trae el runner
+          try {
+            Install-PSResource Microsoft.WinGet.Client -TrustRepository -Scope AllUsers -ErrorAction Stop
+            Repair-WinGetPackageManager -AllUsers -Latest -ErrorAction Stop
+          } catch {
+            Write-Warning "No se pudo actualizar winget: $_"
+          }
           winget --version
 
       - name: Validar e instalar con winget
