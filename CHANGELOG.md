@@ -4,13 +4,15 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versio
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-12
+
 ### Added
 - **System tray app on Linux and Windows**: `redlights tray` shows a moon icon; click it to toggle red mode, right-click for brightness presets. Brightness is remembered between launches, and menus follow the system language (English or Spanish).
 - **Windows**: double-clicking `redlights.exe` starts the tray app without a console window. **Ctrl+Alt+Shift+R** toggles red mode from any app.
 - **Linux**: `redlights toggle` and `redlights status` control the running tray app, so red mode can be bound to a key in any desktop. The `.deb` adds RedLights to the applications menu.
 
 ### Changed
-- Dependabot now also watches Rust dependencies, and CI audits them against the RustSec advisory database.
+- Dependabot now also watches Rust dependencies, and CI checks them with cargo-deny for known vulnerabilities, licenses and sources.
 
 ## [0.3.1] - 2026-10-12
 

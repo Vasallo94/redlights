@@ -107,11 +107,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Vulnerabilidades conocidas en las dependencias de Rust (RustSec)
+      - name: Vulnerabilidades, licencias y orígenes de las dependencias (cargo-deny)
         working-directory: rust
         run: |
-          cargo install cargo-audit --locked --quiet
-          cargo audit --deny warnings
+          cargo install cargo-deny --locked --quiet
+          # Una vez por plataforma publicada: ver el porqué en deny.toml
+          for t in x86_64-unknown-linux-musl aarch64-unknown-linux-musl x86_64-pc-windows-msvc; do
+            echo "== $t"
+            cargo deny --target "$t" check advisories licenses sources
+          done
 
   windows:
     runs-on: windows-2025
