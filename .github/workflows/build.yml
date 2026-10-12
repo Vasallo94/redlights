@@ -6,11 +6,12 @@ on:
     tags: ['v*']
   pull_request:
 
+permissions:
+  contents: read   # por defecto solo lectura; el job de release pide lo suyo
+
 jobs:
-  macos:
+  build:
     runs-on: macos-15
-    permissions:
-      contents: write   # para crear la release al pushear un tag
     steps:
       - uses: actions/checkout@v7
         with:
@@ -19,14 +20,35 @@ jobs:
       - name: Compilar
         run: ./build.sh --zip
 
-      - name: Guardar el zip como artefacto
-        uses: actions/upload-artifact@v7
+      - name: Comprobar el bundle
+        run: ./scripts/check-bundle.sh
+
+      - uses: actions/upload-artifact@v7
         with:
           name: RedLights-macos
           path: RedLights-*.zip
 
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # crear la release
+      id-token: write       # firmar la attestation
+      attestations: write
+    steps:
+      - uses: actions/checkout@v7   # para leer CHANGELOG.md
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: RedLights-macos
+
+      - name: Attestation de procedencia del zip
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: RedLights-*.zip
+
       - name: Publicar release
-        if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -35,5 +57,6 @@ jobs:
           shasum -a 256 "$ZIP" > "$ZIP.sha256"
           # Notas: la sección de esa versión en CHANGELOG.md
           awk -v v="$V" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/ {f=0} f' CHANGELOG.md > notes.md
+          [ -s notes.md ] || { echo "CHANGELOG.md no tiene sección [$V]"; exit 1; }
           gh release create "$GITHUB_REF_NAME" "$ZIP" "$ZIP.sha256" \
             --title "RedLights $V" --notes-file notes.md
