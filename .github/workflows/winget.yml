@@ -1,0 +1,60 @@
+name: winget
+
+# Genera, valida e instala los manifiestos de winget de una versión publicada.
+# Se lanza a mano: Actions → winget → Run workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Versión publicada (p. ej. 0.3.1)
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Generar manifiestos
+        shell: bash
+        env:
+          VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "versión no válida: $VERSION"; exit 1; }
+          scripts/winget-manifests.sh "$VERSION" winget
+
+      - name: Asegurar winget
+        shell: pwsh
+        run: |
+          if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
+            Install-PackageProvider -Name NuGet -Force | Out-Null
+            Install-Module Microsoft.WinGet.Client -Force -Repository PSGallery
+            Repair-WinGetPackageManager -AllUsers -Latest
+          }
+          winget --version
+
+      - name: Validar e instalar con winget
+        shell: pwsh
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          $dir = "winget/manifests/v/Vasallo94/RedLights/$env:VERSION"
+          winget validate --manifest $dir
+          if ($LASTEXITCODE) { throw "winget validate falló" }
+          winget settings --enable LocalManifestFiles
+          winget install --manifest $dir --accept-package-agreements --accept-source-agreements --disable-interactivity
+          if ($LASTEXITCODE) { throw "winget install falló" }
+          $out = & "$env:LOCALAPPDATA\Microsoft\WinGet\Links\redlights.exe" --version
+          Write-Output $out
+          if ($out -ne "redlights $env:VERSION") { throw "versión inesperada: $out" }
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: winget-manifests-${{ inputs.version }}
+          path: winget/
