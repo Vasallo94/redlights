@@ -11,6 +11,12 @@ use std::time::{Duration, Instant};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
+/// Versión del tag de git, que pasa el CI al compilar; si no, la de Cargo.toml.
+const VERSION: &str = match option_env!("REDLIGHTS_VERSION") {
+    Some(v) => v,
+    None => env!("CARGO_PKG_VERSION"),
+};
+
 /// Cada cuánto se reafirma el filtro por si Night Light u otra app lo pisan.
 const REAPPLY: Duration = Duration::from_secs(2);
 
@@ -33,7 +39,7 @@ fn run() -> Result<()> {
     let args: Vec<&str> = args.iter().map(String::as_str).collect();
     match args.as_slice() {
         ["-h" | "--help"] => println!("{USAGE}"),
-        ["-V" | "--version"] => println!("redlights {}", env!("CARGO_PKG_VERSION")),
+        ["-V" | "--version"] => println!("redlights {VERSION}"),
         ["reset"] => {
             let mut b = backend::detect()?;
             b.reset()?;

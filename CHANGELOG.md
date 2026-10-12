@@ -4,6 +4,13 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versio
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-12
+
+### Added
+- **Linux**: `redlights` command-line tool for X11, GNOME (Wayland and X11) and wlroots compositors (Sway, Hyprland, labwc, Wayfire…), for x86_64 and ARM64. `redlights [BRIGHTNESS]` turns displays red until Ctrl-C; `redlights reset` recovers a display stuck red.
+- **Windows** 10/11 (64-bit): the same tool, using the Magnification API color matrix. Normal colors come back when it exits, even if it crashes.
+- Release assets for every platform, each with its SHA-256 and a GitHub provenance attestation.
+
 ## [0.2.0] - 2026-10-12
 
 ### Added

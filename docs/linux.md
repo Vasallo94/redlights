@@ -14,12 +14,14 @@ REDLIGHTS_BACKEND=x11|wlr|mutter redlights   # forzar backend
 |---|---|
 | X11 (RandR) | ✅ Verificado en Xvfb: aplica, restaura la rampa original y `reset` deja la identidad (test de integración) |
 | GNOME (Mutter D-Bus) | ✅ Verificado con Mutter 48 en modo X11: aplica, restaura y resetea (test de integración) |
-| wlroots (`wlr-gamma-control`) | ⚠️ Protocolo verificado con Sway 1.10 headless (se negocia y se maneja el `failed`), pero las salidas virtuales no admiten gamma: falta probarlo con pantalla real |
+| wlroots (`wlr-gamma-control`) | ✅ Verificado con Sway 1.10 sobre **vkms** (driver DRM virtual del kernel): la `GAMMA_LUT` del kernel recibe la rampa roja exacta y vuelve a lineal tras `SIGTERM` y también tras `kill -9` |
 | KDE Plasma | ❌ Pendiente (perfil ICC con VCGT) |
 
-El CI ejecuta Clippy, los tests y las integraciones de X11 y Mutter en x86_64 y ARM64.
+El CI ejecuta Clippy, los tests y las integraciones de X11 y Mutter en x86_64 y ARM64, y la de Windows (API de Magnificación: aplica y lee el efecto) en una máquina Windows real. En Windows, matar el proceso a la fuerza devuelve el efecto a la identidad: se restaura solo.
 
-Falta en hardware real: que se vea rojo, el cursor, Mutter en Wayland (no solo X11), wlroots con una salida real y si Night Light pisa el filtro.
+Prueba con vkms (no está en el CI): `sudo modprobe vkms` en la VM de Podman, contenedor rootful con `--device /dev/dri/card0`, Sway con `WLR_BACKENDS=drm LIBSEAT_BACKEND=noop`, y lectura de la propiedad `GAMMA_LUT` de la CRTC con `drm_info -j` + ioctl `DRM_IOCTL_MODE_GETPROPBLOB`.
+
+Falta en hardware real: que se vea rojo, el cursor, Mutter en Wayland (la API D-Bus es la misma, pero solo se ha probado en modo X11) y si Night Light pisa el filtro.
 
 ---
 
