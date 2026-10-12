@@ -22,6 +22,7 @@ DIR="$OUT/manifests/v/Vasallo94/RedLights/$VERSION"
 mkdir -p "$DIR"
 
 cat > "$DIR/$ID.yaml" <<EOF
+# yaml-language-server: \$schema=https://aka.ms/winget-manifest.version.$SCHEMA.schema.json
 PackageIdentifier: $ID
 PackageVersion: $VERSION
 DefaultLocale: en-US
@@ -30,6 +31,7 @@ ManifestVersion: $SCHEMA
 EOF
 
 cat > "$DIR/$ID.installer.yaml" <<EOF
+# yaml-language-server: \$schema=https://aka.ms/winget-manifest.installer.$SCHEMA.schema.json
 PackageIdentifier: $ID
 PackageVersion: $VERSION
 InstallerType: zip
@@ -47,6 +49,7 @@ ManifestVersion: $SCHEMA
 EOF
 
 cat > "$DIR/$ID.locale.en-US.yaml" <<EOF
+# yaml-language-server: \$schema=https://aka.ms/winget-manifest.defaultLocale.$SCHEMA.schema.json
 PackageIdentifier: $ID
 PackageVersion: $VERSION
 PackageLocale: en-US
