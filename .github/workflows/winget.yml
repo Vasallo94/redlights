@@ -29,14 +29,12 @@ jobs:
           [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "versión no válida: $VERSION"; exit 1; }
           scripts/winget-manifests.sh "$VERSION" winget
 
-      - name: Asegurar winget
+      - name: winget más reciente (el del runner no conoce el último esquema)
         shell: pwsh
         run: |
-          if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-            Install-PackageProvider -Name NuGet -Force | Out-Null
-            Install-Module Microsoft.WinGet.Client -Force -Repository PSGallery
-            Repair-WinGetPackageManager -AllUsers -Latest
-          }
+          Install-PackageProvider -Name NuGet -Force | Out-Null
+          Install-Module Microsoft.WinGet.Client -Force -Repository PSGallery
+          Repair-WinGetPackageManager -AllUsers -Latest
           winget --version
 
       - name: Validar e instalar con winget
