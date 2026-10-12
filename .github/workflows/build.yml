@@ -28,8 +28,87 @@ jobs:
           name: RedLights-macos
           path: RedLights-*.zip
 
+  linux:
+    strategy:
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]   # x86_64 y ARM64 (Raspberry Pi)
+    runs-on: ${{ matrix.runner }}
+    defaults:
+      run:
+        working-directory: rust
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # git describe → versión del binario
+
+      - name: Dependencias de prueba (Xvfb, Mutter, D-Bus)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends xvfb mutter dbus-x11
+
+      - name: Formato
+        run: cargo fmt --check
+
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Tests del núcleo
+        run: cargo test
+
+      - name: Tests de integración (X11 RandR y GNOME Mutter)
+        run: |
+          export DISPLAY=:99 XDG_RUNTIME_DIR="$(mktemp -d)"
+          Xvfb :99 -screen 0 1280x800x24 &
+          sleep 2
+          dbus-run-session -- bash -c 'mutter --x11 --replace & sleep 5; cargo test -- --ignored --test-threads=1'
+
+      - name: Compilar
+        run: REDLIGHTS_VERSION="$(git describe --tags --always | sed 's/^v//')" cargo build --release
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: redlights-linux-${{ runner.arch }}
+          path: rust/target/release/redlights
+
+  windows:
+    runs-on: windows-2025
+    defaults:
+      run:
+        working-directory: rust
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Tests del núcleo
+        run: cargo test
+
+      - name: Test de integración (API de Magnificación)
+        run: cargo test -- --ignored apply_restore_roundtrip
+
+      - name: Compilar
+        shell: pwsh
+        run: |
+          $env:REDLIGHTS_VERSION = (git describe --tags --always) -replace '^v', ''
+          cargo build --release
+
+      - name: ¿Sobrevive el efecto si el proceso muere? (informativo)
+        shell: pwsh
+        run: |
+          $p = Start-Process -PassThru -NoNewWindow target/release/redlights.exe -ArgumentList "0.5"
+          Start-Sleep -Seconds 3
+          Stop-Process -Id $p.Id -Force
+          Start-Sleep -Seconds 1
+          cargo test -q -- --ignored --nocapture print_current_effect
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: redlights-windows-x64
+          path: rust/target/release/redlights.exe
+
   release:
-    needs: build
+    needs: [build, linux, windows]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
@@ -37,26 +116,37 @@ jobs:
       id-token: write       # firmar la attestation
       attestations: write
     steps:
-      - uses: actions/checkout@v7   # para leer CHANGELOG.md
+      - uses: actions/checkout@v7   # CHANGELOG.md y LICENSE
 
-      - uses: actions/download-artifact@v8
-        with:
-          name: RedLights-macos
+      - uses: actions/download-artifact@v8   # sin nombre: cada artefacto en su carpeta
 
-      - name: Attestation de procedencia del zip
+      - name: Empaquetar
+        run: |
+          V="${GITHUB_REF_NAME#v}"
+          mkdir dist
+          mv "RedLights-macos/RedLights-$V.zip" dist/   # con versión: el tap de Homebrew depende del nombre
+          # Linux y Windows sin versión, para enlazar siempre a releases/latest/download/<archivo>
+          for pair in X64:x86_64 ARM64:aarch64; do
+            dir="redlights-linux-${pair%%:*}"
+            chmod +x "$dir/redlights"   # los artefactos pierden el bit de ejecución
+            tar -czf "dist/redlights-linux-${pair##*:}.tar.gz" -C "$dir" redlights -C "$GITHUB_WORKSPACE" LICENSE
+          done
+          zip -j "dist/redlights-windows-x64.zip" redlights-windows-x64/redlights.exe LICENSE
+          cd dist && for f in *; do shasum -a 256 "$f" > "$f.sha256"; done && ls -l
+
+      - name: Attestation de procedencia
         uses: actions/attest-build-provenance@v4
         with:
-          subject-path: RedLights-*.zip
+          subject-path: |
+            dist/*.zip
+            dist/*.tar.gz
 
       - name: Publicar release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           V="${GITHUB_REF_NAME#v}"
-          ZIP="RedLights-$V.zip"
-          shasum -a 256 "$ZIP" > "$ZIP.sha256"
           # Notas: la sección de esa versión en CHANGELOG.md
           awk -v v="$V" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/ {f=0} f' CHANGELOG.md > notes.md
           [ -s notes.md ] || { echo "CHANGELOG.md no tiene sección [$V]"; exit 1; }
-          gh release create "$GITHUB_REF_NAME" "$ZIP" "$ZIP.sha256" \
-            --title "RedLights $V" --notes-file notes.md
+          gh release create "$GITHUB_REF_NAME" dist/* --title "RedLights $V" --notes-file notes.md
