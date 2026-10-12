@@ -33,16 +33,32 @@ Without Homebrew, download `RedLights-x.y.z.zip` from the [latest release](https
 
 Works on X11 (any desktop, including KDE Plasma on X11), GNOME on Wayland or X11, and wlroots compositors: Sway, Hyprland, Wayfire, river, niri and labwc, the Raspberry Pi OS desktop.
 
+On Debian, Ubuntu, Raspberry Pi OS and derivatives, install the `.deb` package:
+
+```bash
+curl -LO https://github.com/Vasallo94/redlights/releases/latest/download/redlights-linux-amd64.deb
+sudo apt install ./redlights-linux-amd64.deb
+```
+
+On any other distribution, use the standalone binary:
+
 ```bash
 curl -L https://github.com/Vasallo94/redlights/releases/latest/download/redlights-linux-x86_64.tar.gz | tar -xz
 sudo install redlights /usr/local/bin/
 ```
 
-For ARM64, such as a Raspberry Pi 4 or 5 with a 64-bit OS, download `redlights-linux-aarch64.tar.gz` instead.
+For ARM64, such as a Raspberry Pi 4 or 5 with a 64-bit OS, use `redlights-linux-arm64.deb` or `redlights-linux-aarch64.tar.gz`. The binary is statically linked, so it runs on any Linux distribution regardless of its C library version.
 
 ### Windows
 
-Windows 10 or 11, 64-bit. Download [`redlights-windows-x64.zip`](https://github.com/Vasallo94/redlights/releases/latest/download/redlights-windows-x64.zip), unzip it and run `redlights.exe`. The executable is not signed, so SmartScreen may warn you the first time: choose **More info → Run anyway**.
+Windows 10 or 11, 64-bit. With [Scoop](https://scoop.sh):
+
+```powershell
+scoop bucket add vasallo94 https://github.com/Vasallo94/scoop-bucket
+scoop install redlights
+```
+
+Or download [`redlights-windows-x64.zip`](https://github.com/Vasallo94/redlights/releases/latest/download/redlights-windows-x64.zip), unzip it and run `redlights.exe`. The executable is not signed, so SmartScreen may warn you the first time: choose **More info → Run anyway**.
 
 ### Verifying downloads
 

@@ -2,6 +2,31 @@
 name = "redlights"
 version = "0.1.0"
 edition = "2024"
+description = "Turn every display pure red for astronomy without losing your night vision"
+license = "MIT"
+repository = "https://github.com/Vasallo94/redlights"
+homepage = "https://github.com/Vasallo94/redlights"
+readme = "README.md"
+keywords = ["astronomy", "night-vision", "gamma", "wayland", "x11"]
+categories = ["command-line-utilities"]
+
+# Paquete .deb (cargo deb). La versión la pone el CI desde el tag (--deb-version).
+[package.metadata.deb]
+maintainer = "Vasallo94 <Vasallo94@users.noreply.github.com>"
+copyright = "2026, Vasallo94"
+section = "utils"
+priority = "optional"
+depends = "$auto"
+extended-description = """\
+RedLights changes the colors the display outputs so that green and blue are \
+zero and red is dimmed to the chosen level, keeping your eyes adapted to the \
+dark while using a computer next to the telescope. Supports X11, GNOME and \
+wlroots-based Wayland compositors (Sway, Hyprland, labwc, Wayfire, niri)."""
+assets = [
+    ["target/release/redlights", "usr/bin/", "755"],
+    ["../LICENSE", "usr/share/doc/redlights/", "644"],
+    ["README.md", "usr/share/doc/redlights/", "644"],
+]
 
 [dependencies]
 ctrlc = { version = "3.5.2", features = ["termination"] }

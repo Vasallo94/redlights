@@ -6,6 +6,11 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versio
 
 ### Added
 - **About RedLights** item in the Mac app menu, showing the version.
+- Debian packages (`.deb`) for x86_64 and ARM64, for Debian, Ubuntu and Raspberry Pi OS.
+- Scoop bucket for Windows: `scoop bucket add vasallo94 https://github.com/Vasallo94/scoop-bucket`.
+
+### Fixed
+- Linux binaries are now statically linked (musl). Version 0.3.0 required glibc 2.39 and did not start on Raspberry Pi OS Bookworm or Ubuntu 22.04.
 
 ## [0.3.0] - 2026-10-12
 
