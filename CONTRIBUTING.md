@@ -20,6 +20,8 @@ Security problems go through private reporting instead; see [SECURITY.md](SECURI
 | `rust/` | Linux and Windows command-line tool |
 | `rust/src/lib.rs` | Shared core: brightness curve, gamma ramps, color matrix |
 | `rust/src/backend/` | One backend per platform mechanism |
+| `rust/src/app.rs`, `tray_*.rs` | Tray app on Linux and Windows |
+| `rust/packaging/` | Linux desktop entry for the `.deb` |
 | `docs/design.md` | Design notes: mechanisms per platform, layout, testing |
 | `scripts/` | Bundle checks and icon generation |
 

@@ -86,7 +86,17 @@ jobs:
               REDLIGHTS_BACKEND=$b timeout --preserve-status 3 out/redlights 0.5
               REDLIGHTS_BACKEND=$b out/redlights reset
             done
-            out/redlights --version'
+            out/redlights --version
+            # Bandeja: arranca, toggle/status por D-Bus, una sola instancia y cierre limpio
+            REDLIGHTS_BACKEND=x11 out/redlights tray & T=$!
+            sleep 2
+            out/redlights status | grep -qx off
+            out/redlights toggle | grep -q "^on at"
+            ! timeout 5 out/redlights tray
+            out/redlights toggle | grep -qx off
+            gdbus call --session --dest io.github.Vasallo94.RedLights \
+              --object-path /io/github/Vasallo94/RedLights --method io.github.Vasallo94.RedLights.Quit
+            wait $T'
 
       - uses: actions/upload-artifact@v7
         with:
@@ -127,6 +137,14 @@ jobs:
         run: |
           $env:REDLIGHTS_VERSION = (git describe --tags --always) -replace '^v', ''
           cargo build --release
+
+      - name: Bandeja (arranca y sigue viva)
+        shell: pwsh
+        run: |
+          $p = Start-Process -PassThru target/release/redlights.exe -ArgumentList "tray"
+          Start-Sleep -Seconds 4
+          if ($p.HasExited) { throw "la bandeja se cerró al arrancar (código $($p.ExitCode))" }
+          Stop-Process -Id $p.Id -Force
 
       - name: ¿Sobrevive el efecto si el proceso muere? (informativo)
         shell: pwsh

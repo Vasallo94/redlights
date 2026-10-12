@@ -15,7 +15,7 @@
 It changes the colors the display itself outputs: no screen capture, no overlay windows, no special permissions. Everything turns red, the cursor included, and normal colors come back when you turn it off.
 
 - **macOS**: menu bar app with a global shortcut (⌃⌥⌘R) and a brightness slider.
-- **Linux and Windows**: a small command-line tool, `redlights`.
+- **Linux and Windows**: a system tray app (with a global shortcut on Windows) that also works as a command-line tool, `redlights`.
 
 ## Install
 
@@ -58,7 +58,7 @@ scoop bucket add vasallo94 https://github.com/Vasallo94/scoop-bucket
 scoop install redlights
 ```
 
-Or download [`redlights-windows-x64.zip`](https://github.com/Vasallo94/redlights/releases/latest/download/redlights-windows-x64.zip), unzip it and run `redlights.exe`. The executable is not signed, so SmartScreen may warn you the first time: choose **More info → Run anyway**.
+Or download [`redlights-windows-x64.zip`](https://github.com/Vasallo94/redlights/releases/latest/download/redlights-windows-x64.zip), unzip it and double-click `redlights.exe`. The executable is not signed, so SmartScreen may warn you the first time: choose **More info → Run anyway**.
 
 ### Verifying downloads
 
@@ -74,15 +74,37 @@ Every release file has a SHA-256 checksum and a GitHub provenance attestation th
 | Adjust brightness | Slider in the menu. The Mac's brightness keys still work and stack with it |
 | Start automatically | **Open at Login** in the menu |
 
-### Linux and Windows
+### Windows
+
+Double-click `redlights.exe` and a moon icon appears in the system tray, near the clock:
+
+| Action | How |
+|---|---|
+| Toggle red mode | **Ctrl+Alt+Shift+R** from any app, or click the tray icon |
+| Brightness and quit | Right-click the tray icon |
+
+### Linux
+
+Start **RedLights** from the applications menu (installed by the `.deb`), or run `redlights tray`. A moon icon appears in the system tray: click it to toggle red mode, right-click for brightness. On GNOME, tray icons need the [AppIndicator extension](https://extensions.gnome.org/extension/615/appindicator-support/), which Ubuntu includes by default.
+
+Wayland doesn't let apps register global shortcuts, so bind `redlights toggle` to a key in your desktop's keyboard settings:
+
+| Desktop | Shortcut setting |
+|---|---|
+| GNOME | Settings → Keyboard → Custom Shortcuts → command `redlights toggle` |
+| KDE Plasma | System Settings → Shortcuts → Add New → Command |
+| Sway, i3 | `bindsym Ctrl+Alt+Shift+r exec redlights toggle` |
+| Hyprland | `bind = CTRL ALT SHIFT, R, exec, redlights toggle` |
+
+### Command line (Linux and Windows)
 
 ```bash
 redlights          # red at 50% brightness until you press Ctrl-C
 redlights 0.3      # brightness from 0 to 1, same curve as the Mac slider
+redlights tray     # run in the system tray
+redlights toggle   # turn red mode on or off in the running tray app (Linux)
 redlights reset    # restore normal colors if a display was left red
 ```
-
-On Windows you can also double-click `redlights.exe`: the screen stays red while its window is open, and closing the window restores normal colors.
 
 ## Why red?
 
@@ -120,7 +142,7 @@ The Mac app is a single Swift file, [`Sources/main.swift`](Sources/main.swift). 
 - [x] Linux: X11, GNOME, wlroots
 - [x] Windows
 - [ ] KDE Plasma on Wayland
-- [ ] Tray icon and global shortcut on Linux and Windows
+- [x] Tray icon on Linux and Windows, global shortcut on Windows
 - [ ] Luminance mode: red follows the brightness of each color, so blue or green text stays readable
 - [ ] Choose which displays turn red, for example laptop red and external monitor off
 - [ ] Turn on automatically at astronomical twilight for your location
